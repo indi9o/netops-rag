@@ -29,11 +29,11 @@ netops-rag/
 
 ```mermaid
 graph TD
-    User((User)) -->|Question| Chat[Chat Interface (Python)]
-    Chat -->|Query| Retriever[Retriever (LangChain)]
+    User((User)) -->|Question| Chat["Chat Interface (Python)"]
+    Chat -->|Query| Retriever["Retriever (LangChain)"]
     Retriever -->|Search| DB[(ChromaDB)]
     DB -->|Context Docs| Retriever
-    Retriever -->|Context + Question| LLM[Ollama (Claw2.2)]
+    Retriever -->|Context + Question| LLM["Ollama (Claw2.2)"]
     LLM -->|Answer| Chat
     Chat -->|Response| User
 ```
