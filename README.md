@@ -1,31 +1,31 @@
 # NetOps RAG (Claw2.2 Edition) 🧠✨
 
-Local RAG (Retrieval-Augmented Generation) system designed for Network Operations, powered by **Ollama** & **Claw2.2** (Custom Llama-3 Persona).
+Sistem RAG (Retrieval-Augmented Generation) lokal yang dirancang khusus untuk Network Operations, ditenagai oleh **Ollama** & **Claw2.2** (Persona Custom Llama-3).
 
-## 🚀 Features
-- **Anti-Hallucination:** Strictly answers based on provided context (Markdown docs).
-- **RouterOS v7 Ready:** Knows the difference between Mikrotik v7 and Cisco IOS.
-- **Local Privacy:** Runs 100% offline using Docker & Ollama.
-- **Indonesian Persona:** Responds in casual Bahasa Indonesia ("Bos", "Gan").
+## 🚀 Fitur
+- **Anti-Hallucination:** Jawaban hanya berdasarkan context yang diberikan (dokumen Markdown).
+- **RouterOS v7 Ready:** Paham perbedaan antara Mikrotik v7 dan Cisco IOS.
+- **Local Privacy:** Jalan 100% offline menggunakan Docker & Ollama.
+- **Indonesian Persona:** Menjawab dengan gaya bahasa santai khas anak jaringan ("Bos", "Gan").
 
-## 🛠️ Prerequisites
-1. **Ollama** installed on host machine.
-2. **Model `claw2.2`** created (see `../modelfiles/Modelfile.v2.2`).
-3. **Docker & Docker Compose**.
+## 🛠️ Prasyarat
+1.  **Ollama** terinstal di mesin host.
+2.  **Model `claw2.2`** sudah dibuat (cek `../modelfiles/Modelfile.v2.2`).
+3.  **Docker & Docker Compose**.
 
-## 📂 Directory Structure
+## 📂 Struktur Direktori
 ```
 netops-rag/
-├── data/               # Knowledge Base (Markdown/Text files)
+├── data/               # Knowledge Base (File Markdown/Text)
 ├── src/
-│   ├── ingest.py       # Script to embed & save docs to VectorDB
-│   └── chat_rag.py     # Script to query RAG
-├── chroma_db/          # Vector Database (Auto-generated)
-├── Dockerfile          # Python Environment
+│   ├── ingest.py       # Script untuk embed & simpan dokumen ke VectorDB
+│   └── chat_rag.py     # Script untuk query RAG
+├── chroma_db/          # Vector Database (Otomatis dibuat)
+├── Dockerfile          # Environment Python
 └── docker-compose.yml  # Orchestration
 ```
 
-## 🏗️ Architecture
+## 🏗️ Arsitektur
 
 ```mermaid
 graph TD
@@ -38,7 +38,7 @@ graph TD
     Chat -->|Response| User
 ```
 
-1.  **Ingestion:** Markdown files -> Split -> Embed (Llama3) -> ChromaDB.
+1.  **Ingestion:** File Markdown -> Split -> Embed (Llama3) -> ChromaDB.
 2.  **Retrieval:** User Query -> Embed -> Search ChromaDB (Top-K) -> Context.
 3.  **Generation:** Context + Query -> Prompt Template (Strict) -> Ollama (Claw2.2) -> Answer.
 
@@ -49,24 +49,24 @@ graph TD
 docker compose build
 ```
 
-### 2. Ingest Knowledge (Teach Claw)
-Put your Markdown files in `data/`, then run:
+### 2. Ingest Knowledge (Kasih Ilmu ke Claw)
+Taruh file Markdown kamu di `data/`, lalu jalankan:
 ```bash
 docker compose up ingest
 ```
-*This will parse docs and save them to `chroma_db/`.*
+*Ini akan melakukan parsing dokumen dan menyimpannya ke `chroma_db/`.*
 
-### 3. Chat with Claw
-Ask technical questions:
+### 3. Chat dengan Claw
+Ajukan pertanyaan teknis:
 ```bash
 docker compose run --rm chat python src/chat_rag.py "Bagaimana cara set BGP di Mikrotik v7?"
 ```
 
-## 📝 Configuration
-- **Model:** Change `MODEL_NAME` in `src/chat_rag.py` (Default: `claw2.2`).
-- **Retrieval:** Adjust `k` value in `src/chat_rag.py` (Default: `k=5` chunks).
-- **Prompt:** Edit `PROMPT_TEMPLATE` in `src/chat_rag.py` to change persona/strictness.
+## 📝 Konfigurasi
+- **Model:** Ubah `MODEL_NAME` di `src/chat_rag.py` (Default: `claw2.2`).
+- **Retrieval:** Atur nilai `k` di `src/chat_rag.py` (Default: `k=5` chunks).
+- **Prompt:** Edit `PROMPT_TEMPLATE` di `src/chat_rag.py` untuk mengubah persona/strictness.
 
-## ⚠️ Notes
-- Ensure Ollama is running on host (`systemctl start ollama`).
-- Docker container accesses host network via `host.docker.internal`.
+## ⚠️ Catatan
+- Pastikan Ollama sudah jalan di host (`systemctl start ollama`).
+- Container Docker mengakses host network via `host.docker.internal`.
