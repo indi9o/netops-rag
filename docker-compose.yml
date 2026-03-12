@@ -1,0 +1,25 @@
+services:
+  # Service 1: Ingest Data (Jalan Sekali buat Update Knowledge)
+  ingest:
+    build: .
+    image: netops-rag:latest
+    container_name: netops-rag-ingest
+    volumes:
+      - ./data:/app/data  # Mount data folder biar live update
+      - ./chroma_db:/app/chroma_db # Persist Vector DB
+    command: ["python", "src/ingest.py"]
+    extra_hosts:
+      - "host.docker.internal:host-gateway" # Biar bisa akses Ollama di host
+
+  # Service 2: Chat Interface (Jalanin manual pake 'docker compose run chat ...')
+  chat:
+    build: .
+    image: netops-rag:latest
+    container_name: netops-rag-chat
+    volumes:
+      - ./chroma_db:/app/chroma_db # Baca Vector DB hasil ingest
+    command: ["python", "src/chat_rag.py"] # Default command (bisa dioverride)
+    extra_hosts:
+      - "host.docker.internal:host-gateway" # Akses Ollama di host
+    environment:
+      - OLLAMA_HOST=http://host.docker.internal:11434
